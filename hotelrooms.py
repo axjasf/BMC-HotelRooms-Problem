@@ -31,13 +31,15 @@ def calculate_value_groups(max_n):
     return group_counts, value_groups
 
 def check_group_integrity(value_groups):
-    all_values = set()
+    all_values = {}
     for i, group in enumerate(value_groups, 1):
         for value in group:
             if value in all_values:
-                print(f"Integrity check failed: Value {value} in group {i} is also present in another group.")
+                print(f"Integrity check failed: Value {value} is in both group {all_values[value]} and group {i}.")
+                print(f"Group {all_values[value]}: {sorted(value_groups[all_values[value]-1])}")
+                print(f"Group {i}: {sorted(group)}")
                 return False
-            all_values.add(value)
+            all_values[value] = i
     print("Integrity check passed: All groups are mutually exclusive.")
     return True
 
