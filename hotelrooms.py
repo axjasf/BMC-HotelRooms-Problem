@@ -9,25 +9,50 @@ def g(n):
 def h(n):
     return n + 81
 
-def calculate_value_groups(max_n):
+def calculate_value_groups(max_n, show_development=False):
     value_groups = []
     group_counts = []
 
     for n in range(1, max_n + 1):
         values = set([f(n), g(n), h(n)])
         
-        matching_groups = [i for i, group in enumerate(value_groups) if group & values]
+        if show_development:
+            print(f"\n--- Step n = {n} ---")
+            print(f"New values: {values}")
+        
+        matching_groups = []
+        colliding_values = set()
+        for i, group in enumerate(value_groups):
+            common_values = group & values
+            if common_values:
+                matching_groups.append(i)
+                colliding_values.update(common_values)
         
         if matching_groups:
             lowest_group_index = min(matching_groups)
+            if show_development:
+                print(f"Collisions found in groups: {[i+1 for i in matching_groups]}")
+                print(f"Colliding values: {colliding_values}")
+                print(f"Merging into group {lowest_group_index + 1}")
+            
             value_groups[lowest_group_index].update(values)
             for i in sorted(matching_groups[1:], reverse=True):
+                if show_development:
+                    print(f"Folding group {i + 1} into group {lowest_group_index + 1}")
                 value_groups[lowest_group_index].update(value_groups[i])
                 del value_groups[i]
         else:
+            if show_development:
+                print("No collisions. Creating new group.")
             value_groups.append(values)
         
         group_counts.append(len(value_groups))
+        
+        if show_development:
+            print(f"Current groups:")
+            for i, group in enumerate(value_groups, 1):
+                print(f"Group {i}: {sorted(group)}")
+            print(f"Total groups: {len(value_groups)}")
 
     return group_counts, value_groups
 
@@ -48,11 +73,11 @@ def check_group_integrity(value_groups):
 
 # User input
 max_n = int(input("Enter the maximum value for n: "))
-print_choice = input("Print output? (n: no output / g: print groups / s: print sizes): ").lower()
+print_choice = input("Print output? (n: no output / g: print groups / s: print sizes / d: show development): ").lower()
 plot_choice = input("Plot the diagram? (y/n): ").lower() == 'y'
 
 # Run the calculation
-group_counts, value_groups = calculate_value_groups(max_n)
+group_counts, value_groups = calculate_value_groups(max_n, show_development=(print_choice == 'd'))
 
 # Print output based on user choice
 if print_choice == 'g':
