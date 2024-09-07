@@ -14,17 +14,18 @@ def calculate_value_groups(max_n):
     group_counts = []
 
     for n in range(1, max_n + 1):
-        values = [f(n), g(n), h(n)]
+        values = set([f(n), g(n), h(n)])
         
-        found_group = False
-        for group in value_groups:
-            if any(value in group for value in values):
-                group.update(values)
-                found_group = True
-                break
+        matching_groups = [i for i, group in enumerate(value_groups) if group & values]
         
-        if not found_group:
-            value_groups.append(set(values))
+        if matching_groups:
+            lowest_group_index = min(matching_groups)
+            value_groups[lowest_group_index].update(values)
+            for i in sorted(matching_groups[1:], reverse=True):
+                value_groups[lowest_group_index].update(value_groups[i])
+                del value_groups[i]
+        else:
+            value_groups.append(values)
         
         group_counts.append(len(value_groups))
 
