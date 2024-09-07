@@ -22,10 +22,12 @@ def animate_group_development(max_n, animation_speed, show_members):
         
         # Update value_groups
         matching_groups = [i for i, group in enumerate(value_groups) if group & values]
+        folded_groups = []
         if matching_groups:
             lowest_group_index = min(matching_groups)
             value_groups[lowest_group_index].update(values)
             for i in sorted(matching_groups[1:], reverse=True):
+                folded_groups.append(i)
                 value_groups[lowest_group_index].update(value_groups[i])
                 del value_groups[i]
         else:
@@ -39,9 +41,12 @@ def animate_group_development(max_n, animation_speed, show_members):
         for bar in bars:
             bar.set_color('lightblue')
         if matching_groups:
-            bars[lowest_group_index].set_color('yellow')
-        else:
-            bars[-1].set_color('lightgreen')
+            bars[lowest_group_index].set_color('yellow')  # Merging
+            for i in folded_groups:
+                if i < len(bars):
+                    bars[i].set_color('red')  # Folding
+        elif value_groups:
+            bars[-1].set_color('lightgreen')  # New group
         
         # Annotations
         for i, (bar, group) in enumerate(zip(bars, value_groups)):
