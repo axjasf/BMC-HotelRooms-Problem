@@ -30,6 +30,17 @@ def calculate_value_groups(max_n):
 
     return group_counts, value_groups
 
+def check_group_integrity(value_groups):
+    all_values = set()
+    for i, group in enumerate(value_groups, 1):
+        for value in group:
+            if value in all_values:
+                print(f"Integrity check failed: Value {value} in group {i} is also present in another group.")
+                return False
+            all_values.add(value)
+    print("Integrity check passed: All groups are mutually exclusive.")
+    return True
+
 # User input
 max_n = int(input("Enter the maximum value for n: "))
 print_choice = input("Print output? (n: no output / g: print groups / s: print sizes): ").lower()
@@ -61,3 +72,6 @@ if plot_choice:
     plt.show()
 
 print(f"\nTotal number of groups: {len(value_groups)}")
+
+# Perform integrity check
+check_group_integrity(value_groups)
