@@ -32,16 +32,18 @@ def calculate_value_groups(max_n):
 
 def check_group_integrity(value_groups):
     all_values = {}
+    integrity_failed = False
     for i, group in enumerate(value_groups, 1):
         for value in group:
             if value in all_values:
                 print(f"Integrity check failed: Value {value} is in both group {all_values[value]} and group {i}.")
-                print(f"Group {all_values[value]}: {sorted(value_groups[all_values[value]-1])}")
-                print(f"Group {i}: {sorted(group)}")
-                return False
-            all_values[value] = i
-    print("Integrity check passed: All groups are mutually exclusive.")
-    return True
+                integrity_failed = True
+            else:
+                all_values[value] = i
+    
+    if not integrity_failed:
+        print("Integrity check passed: All groups are mutually exclusive.")
+    return not integrity_failed
 
 # User input
 max_n = int(input("Enter the maximum value for n: "))
