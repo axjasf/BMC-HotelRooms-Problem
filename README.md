@@ -1,6 +1,6 @@
 # Hotel Rooms Problem Solver and Visualizer
 
-This repository contains Python implementations, analysis tools, and visualization solutions for the Hotel Rooms problem, a mathematical puzzle from BMC Upper's Math Contest 1, 2024/2025. The original problem can be found in this [PDF document](https://mathcircle.berkeley.edu/sites/default/files/handouts_mc/problems/2024/mc1.pdf). Please note: In the contest, it is a castle instead of a hotel.
+This repository contains Python implementations, analysis tools, and visualization solutions for the Hotel Rooms problem, a mathematical puzzle from BMC Upper's Math Contest 1, 2024/2025. The original problem can be found in this [PDF document](https://mathcircle.berkeley.edu/sites/default/files/handouts_mc/problems/2024/mc1.pdf). Please note: The contest mentiones a castle instead of a hotel.
 
 ## Problem Description
 
