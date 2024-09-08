@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Rooms Problem Solver</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        form { margin-bottom: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .groups-row { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hotel Rooms Problem Solver</h1>
+        <form id="calculate-form">
+            <label for="max_n">Enter the maximum value for n:</label>
+            <input type="number" id="max_n" name="max_n" required min="1">
+            <button type="submit">Calculate</button>
+        </form>
+        <div id="results"></div>
+    </div>
+    <script>
+        document.getElementById('calculate-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const maxN = document.getElementById('max_n').value;
+            console.log('Submitting form with max_n:', maxN);
+            
+            document.getElementById('results').innerHTML = '<p>Calculating...</p>';
+
+            fetch('/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `max_n=${maxN}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Received data:', data);
+                let resultsHtml = `<h2>Results for n = 1 to ${data.max_n}</h2>`;
+                
+                // Add plot
+                resultsHtml += `<img src="data:image/png;base64,${data.plot}" alt="Group Count Plot">`;
+                
+                // Create table
+                resultsHtml += `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>n</th>
+                                <th>Number of Groups</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                data.group_counts.forEach((count, index) => {
+                    const n = index + 1;
+                    resultsHtml += `
+                        <tr class="n-row" data-n="${n}">
+                            <td>${n}</td>
+                            <td>${count}</td>
+                        </tr>
+                        <tr class="groups-row" id="groups-${n}">
+                            <td colspan="2">
+                                ${data.all_groups[index].map((group, i) => `Group ${i + 1}: ${group.join(', ')}`).join('<br>')}
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                resultsHtml += `
+                        </tbody>
+                    </table>
+                `;
+                
+                document.getElementById('results').innerHTML = resultsHtml;
+                
+                // Add click event to show/hide groups
+                document.querySelectorAll('.n-row').forEach(row => {
+                    row.addEventListener('click', function() {
+                        const n = this.getAttribute('data-n');
+                        const groupsRow = document.getElementById(`groups-${n}`);
+                        groupsRow.style.display = groupsRow.style.display === 'none' ? 'table-row' : 'none';
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('results').innerHTML = `<p>An error occurred: ${error.message}</p>`;
+            });
+        });
+    </script>
+</body>
+</html>
