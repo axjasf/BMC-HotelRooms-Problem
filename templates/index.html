@@ -54,6 +54,7 @@
                             <tr>
                                 <th>n</th>
                                 <th>Number of Groups</th>
+                                <th>New Values and Collisions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,13 +62,18 @@
                 
                 data.group_counts.forEach((count, index) => {
                     const n = index + 1;
+                    const newValues = [f(n), g(n), h(n)];
+                    const collisions = data.all_groups[index].filter(group => 
+                        group.some(value => newValues.includes(value))
+                    );
                     resultsHtml += `
                         <tr class="n-row" data-n="${n}">
                             <td>${n}</td>
                             <td>${count}</td>
+                            <td>New: ${newValues.join(', ')}<br>Collides with: ${collisions.length > 0 ? collisions.map((g, i) => `Group ${i + 1}`).join(', ') : 'None'}</td>
                         </tr>
                         <tr class="groups-row" id="groups-${n}">
-                            <td colspan="2">
+                            <td colspan="3">
                                 ${data.all_groups[index].map((group, i) => `Group ${i + 1}: ${group.join(', ')}`).join('<br>')}
                             </td>
                         </tr>
